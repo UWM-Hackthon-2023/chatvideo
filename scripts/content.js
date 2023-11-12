@@ -106,7 +106,7 @@ async function initYoutubeBlock(secondary) {
     youtubeBlock.innerHTML = `
 	<div class="block_wrap" style="">
             
-              <p class="chapter_title">AI summary</p>
+            <p class="chapter_title">AI summary</p>
             
             <div style="display: flex; flex-direction: row; justify-content: space-between;">
                <button id="vyb-block-header-button-summary" style="background: greenyellow; 
@@ -119,12 +119,13 @@ async function initYoutubeBlock(secondary) {
                box-sizing: border-box;">
                     Summary
                 </button>
-                <button id="block_wrap" class="title_item_wrap active" style="background: transparent;border: 0px;"/>
+                
+                  
+                 <button id="block_wrap" class="title_item_wrap" style="background: transparent;border: 0px;"/>
                 <hr class="dashed">
             </div>
-            <div id="list_wrap" class="node_wrap node_wrap_show">
-                
-            </div>
+            <div id="list_wrap" class="node_wrap node_wrap_hide"></div>
+          
     </div>
     `
 
@@ -169,9 +170,7 @@ async function initYoutubeBlock(secondary) {
         } else {
             // 清空 list_wrap 内容
             list_wrap.innerHTML = '';
-
             // 遍历 textContents 数组
-
 
             let container = document.createElement("div")
             container.style = "display: flex;\n" +
