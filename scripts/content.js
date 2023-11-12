@@ -107,21 +107,32 @@ async function initYoutubeBlock(secondary) {
     var youtubeBlock = document.createElement("div")
     youtubeBlock.id = "video-youtube-block-container"
 
-
     youtubeBlock.innerHTML = `
 	<div class="block_wrap" style="">
-            <p class="chapter_title">章节名称</p>
+            
+              <p class="chapter_title">AI summary</p>
+            
             <div style="display: flex; flex-direction: row; justify-content: space-between;">
-                <button id="vyb-block-header-button-summary" >
+               <button id="vyb-block-header-button-summary" style="background: greenyellow; 
+               border: 0px; 
+               width: 75px; 
+               height: 25px; 
+               margin-top: 25px;
+               margin-left: 10px;
+               margin-bottom: 10px;
+               box-sizing: border-box;">
                     Summary
                 </button>
                 <button id="block_wrap" class="title_item_wrap active" style="background: transparent;border: 0px;"/>
+                <hr class="dashed">
             </div>
-            <div id="list_wrap">
-                <p>123</p>
+            <div id="list_wrap" class="node_wrap node_wrap_show">
+                
             </div>
     </div>
     `
+
+
     secondary.insertBefore(youtubeBlock, secondary.firstChild)
 
 
@@ -148,6 +159,44 @@ async function initYoutubeBlock(secondary) {
 
     // 获取标题元素
     var block_wrap = document.getElementById('block_wrap')
+    console.log(block_wrap)
+
+    const videoId = getPara(window.location.href).v
+    let langOptionsWithLink = await getLangOptionsWithLink(videoId)
+    console.log(langOptionsWithLink)
+    let captions = await getCaptionsCollection(langOptionsWithLink)
+    console.log(captions);
+    const textContents = captions.map(element => element.textContent);
+
+
+    // 为按钮添加点击事件处理函数
+    block_wrap.onclick = function() {
+        let list_wrap = document.getElementById('list_wrap')
+        let classArray = this.className.split(/\s+/)
+        if (classArray.includes('active')) {
+            console.log('内容为空')
+            block_wrap.classList.remove('active')
+            list_wrap.classList.remove('node_wrap_show')
+            list_wrap.classList.add('node_wrap_hide')
+            console.log(this.className.split(/\s+/))
+            return
+        } else {
+            console.log('内容不为空')
+            var pElement = document.querySelector("#list_wrap p");
+            if (pElement) {
+                pElement.textContent = textContents[0];
+            }
+            document.getElementById("list_wrap").textContent = textContents[0];
+
+            block_wrap.classList.add('active')
+            list_wrap.classList.add('node_wrap_show')
+            list_wrap.classList.remove('node_wrap_hide')
+            return
+
+        }
+
+
+    };
     //给标题元素添加点击事件，通过点击控制class的添加&去除达成动画效果
 }
 

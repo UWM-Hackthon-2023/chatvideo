@@ -41,3 +41,34 @@
     transform: rotate(135deg);
     margin-top: 5px;
 }
+.chapter_title {
+    font-size: 16px;
+    padding: 0;
+    margin-top: 10px;
+    margin-left: 10px;
+    width: calc(100% - 30px);
+}
+.node_wrap {
+    overflow: hidden;
+    transition: 0.3s;
+}
+.node_wrap p {
+    padding: 0 20px 5px 20px;
+    margin: 10px 0;
+    border-bottom: 1px solid #e3e3e3
+}
+/*隐藏内容块的滑动条*/
+.node_wrap::-webkit-scrollbar {
+    display: none;
+}
+/*控制内容块隐藏 隐藏时，整块向左边平移200%的宽度，并且将最大高度设置为0，否则页面会留有空白*/
+.node_wrap_hide {
+    overflow: hidden;
+    max-height: 0;
+}
+/*控制内容块显示，显示时，整块向右边复原，并且将最大高度设置为300px，里面的内容即会将块撑开*/
+.node_wrap_show {
+    overflow: visible;
+    max-height: 300px;
+}
+
