@@ -7,6 +7,9 @@
         "default_popup": "/popup/popup.html",
         "default_icon": "/images/icon2.png"
     },
+    "background": {
+        "service_worker": "./background/background.js"
+    },
     "content_scripts": [
         {
             "js": [
@@ -16,10 +19,12 @@
                 "/styles/content.css"
             ],
             "matches": [
-                "https://www.youtube.com/watch*"
+                "https://www.youtube.com/watch*",
+                "https://chat.openai.com/*"
             ]
 
         }
     ],
-    "permissions":["activeTab", "scripting"]
+    "permissions":["activeTab", "scripting"],
+    "type": "module"
 }

@@ -1,5 +1,15 @@
 
-initYoutube()
+
+start()
+async function start() {
+    if(window.location.hostname === "www.youtube.com") {
+        console.log("get into youtube...")
+        await initYoutube()
+    } else {
+
+    }
+
+}
 
 async function initYoutube() {
 
@@ -11,12 +21,17 @@ async function initYoutube() {
 
     const videoId = getPara(window.location.href).v
     let langOptionsWithLink = await getLangOptionsWithLink(videoId)
-    if (!langOptionsWithLink) {
+    if (langOptionsWithLink === undefined) {
         return;
     }
 
-    captions = await getCaptionsCollection(videoId)
-    console.log(captions)
+    let captions = await getCaptionsCollection(langOptionsWithLink)
+
+    let summaryBut = document.getElementById("vyb-block-header-button-summary")
+    summaryBut.addEventListener("click", e => {
+        aggregateCaptions(captions)
+        window.open("https://chat.openai.com/", "_blank")
+    })
 
 }
 
@@ -44,7 +59,7 @@ async function getLangOptionsWithLink(videoId) {
         }
     })
 }
-async function getCaptionsCollection(videoId) {
+async function getCaptionsCollection(langOptionsWithLink) {
     let captionsResponse = await fetch(langOptionsWithLink[0].link)
     if (!captionsResponse.ok) {
         throw new Error(`HTTP error! status: ${captionsResponse.status}`)
@@ -85,10 +100,27 @@ function initYoutubeBlock(secondary) {
     </div>
     `
     secondary.insertBefore(youtubeBlock, secondary.firstChild)
+
+
     // 获取标题元素
     var block_wrap = document.getElementById('block_wrap')
-    console.log(block_wrap)
     //给标题元素添加点击事件，通过点击控制class的添加&去除达成动画效果
+}
+function aggregateCaptions(captions) {
+    let str = ""
+    captions.forEach((a) => str += a.innerHTML + "")
+    if(navigator.clipboard) {
+
+       console.log(navigator.clipboard)
+    }
+    window.navigator.clipboard.writeText("asdasd")
+        .then(() => {
+            console.log("Text copied to clipboard successfully!");
+        })
+        .catch(err => {
+            console.error("Failed to copy text: ", err);
+        });
+
 }
 
 function waitForElement(selector) {
