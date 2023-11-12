@@ -5,18 +5,15 @@ start()
 function start() {
     window.onload = async () => {
         if (window.location.hostname === "www.youtube.com") {
-            console.log("get into youtube...")
             await initYoutube()
         }
         if (window.location.hostname === "chat.openai.com") {
             {
                 if (document.getElementsByTagName("textarea")[0]) {
                     if (window.location.search === "?ref=chatvideo") {
-                        console.log("get into chatgpt...")
 
                         chrome.runtime.sendMessage({message: "getPrompt"}, async (response) => {
                             document.getElementsByTagName("textarea")[0].focus()
-                            // console.log(response.prompt)
                             copyTextToClipboard(response.prompt)
                             // document.getElementsByTagName("textarea")[0].value = response.prompt
 
@@ -24,7 +21,6 @@ function start() {
                             let input = setInterval(() => {
                                 document.getElementsByTagName("textarea")[0].value = response.prompt
                                 document.getElementsByTagName("button")[document.getElementsByTagName("button").length - 2].disabled = false
-                                console.log("done")
                                 document.getElementsByTagName("button")[document.getElementsByTagName("button").length - 2].click();
                                 counter++
                                 if (counter == 3) {
@@ -106,7 +102,7 @@ async function initYoutubeBlock(secondary) {
 
     var youtubeBlock = document.createElement("div")
     youtubeBlock.id = "video-youtube-block-container"
-
+    youtubeBlock.style = "margin-bottom:10px"
     youtubeBlock.innerHTML = `
 	<div class="block_wrap" style="">
             
@@ -141,9 +137,7 @@ async function initYoutubeBlock(secondary) {
     let summaryBut = document.getElementById("vyb-block-header-button-summary")
     summaryBut.addEventListener("click", e => {
         let prompt = getSummaryPrompt(aggregateCaptions(captions))
-        console.log(prompt)
         chrome.runtime.sendMessage({message: "setPrompt", prompt: prompt});
-        console.log("prompt sent it")
         setTimeout(() => {
             chrome.runtime.sendMessage({message: "setPrompt", prompt: prompt});
             window.open("https://chat.openai.com/chat?ref=chatvideo", "_blank")
@@ -154,30 +148,20 @@ async function initYoutubeBlock(secondary) {
     // 获取标题元素
     var block_wrap = document.getElementById('block_wrap')
     block_wrap.classList.remove('active')
-    console.log(block_wrap)
-
-    const videoId = getPara(window.location.href).v
-    let langOptionsWithLink = await getLangOptionsWithLink(videoId)
-    console.log(langOptionsWithLink)
-    let captions = await getCaptionsCollection(langOptionsWithLink)
 
 
     const textContents = captions.map(element => element.textContent);
-    captions[0].attributes
 
     // 为按钮添加点击事件处理函数
     block_wrap.onclick = function() {
         let list_wrap = document.getElementById('list_wrap')
         let classArray = this.className.split(/\s+/)
         if (classArray.includes('active')) {
-            console.log('内容为空')
             block_wrap.classList.remove('active')
             list_wrap.classList.remove('node_wrap_show')
             list_wrap.classList.add('node_wrap_hide')
-            console.log(this.className.split(/\s+/))
             return
         } else {
-            console.log('内容不为空')
             // 清空 list_wrap 内容
             list_wrap.innerHTML = '';
 
@@ -195,7 +179,6 @@ async function initYoutubeBlock(secondary) {
             captions.forEach(function(text) {
                 let temp = parseFloat(text.getAttribute("start"));
                 let pTime = document.createElement("a");
-                // console.log(temp);
                 pTime.className = "ytb-ptime"
                 pTime.innerHTML = secondsToMinutes(temp)
                 pTime.href = "/watch?v=" + videoId + "&t=" + temp + "s"
@@ -203,7 +186,7 @@ async function initYoutubeBlock(secondary) {
                 // 为每个文本创建新的 <p> 元素
                 let pElement = document.createElement("p");
                 pElement.className = "ytb-pelement"
-                if(temp <= 50*n){
+                if(temp <= 40*n){
                     if(content == "") {
                         container.appendChild(pTime)
                     }
@@ -211,7 +194,11 @@ async function initYoutubeBlock(secondary) {
                 }else{
                     n += 1
                     content += text.textContent + " "
-                    pElement.textContent = content;
+                    content = content.replaceAll("[Music]", "")
+                    content = content.replaceAll("[Applause]", "")
+
+
+                    pElement.innerHTML = content;
                     container.appendChild(pElement)
                     list_wrap.appendChild(container);
                     content = ""
@@ -223,7 +210,9 @@ async function initYoutubeBlock(secondary) {
                 }
                 if(captions.indexOf(text) == captions.length - 1){
 
-                    pElement.textContent = content;
+                    content = content.replaceAll("[Music]", "")
+                    content = content.replaceAll("[Applause]", "")
+                    pElement.innerHTML = content;
                     container.appendChild(pElement)
                     list_wrap.appendChild(container);
                 }
