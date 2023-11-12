@@ -26,6 +26,5 @@
 
         }
     ],
-    "permissions":["activeTab", "scripting"],
-    "type": "module"
+    "permissions":["activeTab", "scripting"]
 }
