@@ -187,7 +187,16 @@ async function initYoutubeBlock(secondary) {
                 let pTime = document.createElement("a");
                 pTime.className = "ytb-ptime"
                 pTime.innerHTML = secondsToMinutes(temp)
-                pTime.href = "/watch?v=" + videoId + "&t=" + temp + "s"
+                // pTime.href = "/watch?v=" + videoId + "&t=" + temp + "s"
+                pTime.href = ""
+                pTime.addEventListener("click", e => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const ytVideoEl = document.querySelector("#movie_player > div.html5-video-container > video");
+                    console.log((ytVideoEl))
+                    ytVideoEl.currentTime = Math.floor(temp);
+                    ytVideoEl.play();
+                })
 
                 // 为每个文本创建新的 <p> 元素
                 let pElement = document.createElement("p");
