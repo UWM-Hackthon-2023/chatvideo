@@ -115,15 +115,17 @@ async function initYoutubeBlock(secondary) {
 
     // 获取标题元素
     var block_wrap = document.getElementById('block_wrap')
+    block_wrap.classList.remove('active')
     console.log(block_wrap)
 
     const videoId = getPara(window.location.href).v
     let langOptionsWithLink = await getLangOptionsWithLink(videoId)
     console.log(langOptionsWithLink)
     let captions = await getCaptionsCollection(langOptionsWithLink)
-    console.log(captions);
-    const textContents = captions.map(element => element.textContent);
 
+
+    const textContents = captions.map(element => element.textContent);
+    captions[0].attributes
 
     // 为按钮添加点击事件处理函数
     block_wrap.onclick = function() {
@@ -138,22 +140,73 @@ async function initYoutubeBlock(secondary) {
             return
         } else {
             console.log('内容不为空')
-            var pElement = document.querySelector("#list_wrap p");
-            if (pElement) {
-                pElement.textContent = textContents[0];
-            }
-            document.getElementById("list_wrap").textContent = textContents[0];
+            // 清空 list_wrap 内容
+            list_wrap.innerHTML = '';
+
+            // 遍历 textContents 数组
+
+
+            let container = document.createElement("div")
+            container.style = "display: flex;\n" +
+                "    flex-direction: row;\n" +
+                "    flex-wrap: nowrap;\n" +
+                "    justify-content: space-between;"
+
+            let content = ""
+            let n = 1
+            captions.forEach(function(text) {
+                let temp = parseFloat(text.getAttribute("start"));
+                let pTime = document.createElement("a");
+                // console.log(temp);
+                pTime.className = "ytb-ptime"
+                pTime.innerHTML = secondsToMinutes(temp)
+                pTime.href = "https://youtu.be/" +  + "?t=" + temp
+                // 为每个文本创建新的 <p> 元素
+                let pElement = document.createElement("p");
+                pElement.className = "ytb-pelement"
+                if(temp <= 50*n){
+                    if(content == "") {
+                        console.log(pTime)
+                        console.log("asdadsa")
+                        container.appendChild(pTime)
+                    }
+                    content += text.textContent + " "
+                }else{
+                    n += 1
+                    content += text.textContent + " "
+                    pElement.textContent = content;
+                    container.appendChild(pElement)
+                    list_wrap.appendChild(container);
+                    content = ""
+                    container = document.createElement("div")
+                    container.style = "display: flex;\n" +
+                        "    flex-direction: row;\n" +
+                        "    flex-wrap: nowrap;\n" +
+                        "    justify-content: space-between;"
+                }
+                if(captions.indexOf(text) == captions.length - 1){
+
+                    pElement.textContent = content;
+                    container.appendChild(pElement)
+                    list_wrap.appendChild(container);
+                }
+            });
 
             block_wrap.classList.add('active')
             list_wrap.classList.add('node_wrap_show')
             list_wrap.classList.remove('node_wrap_hide')
             return
-
         }
 
-
     };
-    //给标题元素添加点击事件，通过点击控制class的添加&去除达成动画效果
+}
+
+function secondsToMinutes(seconds) {
+    const minutes = Math.floor(seconds / 60);
+    let remainingSeconds = Math.floor(seconds % 60);
+    remainingSeconds = remainingSeconds < 10 ? "0" + remainingSeconds : remainingSeconds
+
+    return `${minutes}:${remainingSeconds}`;
 }
 function aggregateCaptions(captions) {
     let str = ""
