@@ -134,7 +134,6 @@ async function initYoutubeBlock(secondary) {
 
     const videoId = getPara(window.location.href).v
     let langOptionsWithLink = await getLangOptionsWithLink(videoId)
-    console.log(langOptionsWithLink)
     let captions = await getCaptionsCollection(langOptionsWithLink)
 
 
@@ -193,7 +192,6 @@ async function initYoutubeBlock(secondary) {
                     e.preventDefault();
                     e.stopPropagation();
                     const ytVideoEl = document.querySelector("#movie_player > div.html5-video-container > video");
-                    console.log((ytVideoEl))
                     ytVideoEl.currentTime = Math.floor(temp);
                     ytVideoEl.play();
                 })
@@ -268,7 +266,9 @@ function trucateCaptions(transcript) {
 function aggregateCaptions(captions) {
     let str = ""
     captions.forEach((a) => str += a.textContent + "")
-    str = str.replaceAll("&#39;", "'")
+    let test = document.createElement("div")
+    test.innerHTML = str
+    str = test.innerText
     str = str.replaceAll("[Music]", " ")
     str = str.replaceAll("[Applause]", " ")
     return str;
