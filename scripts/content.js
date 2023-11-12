@@ -19,9 +19,6 @@ async function initYoutube() {
         initYoutubeBlock(document.getElementById("secondary-inner"))
     })
 
-<<<<<<< HEAD:scripts/content2.js
-
-=======
     const videoId = getPara(window.location.href).v
     let langOptionsWithLink = await getLangOptionsWithLink(videoId)
     if (langOptionsWithLink === undefined) {
@@ -35,7 +32,6 @@ async function initYoutube() {
         aggregateCaptions(captions)
         window.open("https://chat.openai.com/", "_blank")
     })
->>>>>>> 66613ae52f71e5e849c9db4c50af140d23f636da:scripts/content.js
 
 }
 
@@ -108,7 +104,7 @@ async function initYoutubeBlock(secondary) {
                 <hr class="dashed">
             </div>
             <div id="list_wrap" class="node_wrap node_wrap_show">
-                <p>123</p>
+                
             </div>
     </div>
     `
@@ -119,14 +115,14 @@ async function initYoutubeBlock(secondary) {
 
     // 获取标题元素
     var block_wrap = document.getElementById('block_wrap')
-<<<<<<< HEAD:scripts/content2.js
     console.log(block_wrap)
 
     const videoId = getPara(window.location.href).v
     let langOptionsWithLink = await getLangOptionsWithLink(videoId)
     console.log(langOptionsWithLink)
-    let captions = await getCaptionsCollection(videoId)
-    // const textContents = captions.map(element => element.textContent);
+    let captions = await getCaptionsCollection(langOptionsWithLink)
+    console.log(captions);
+    const textContents = captions.map(element => element.textContent);
 
 
     // 为按钮添加点击事件处理函数
@@ -142,11 +138,12 @@ async function initYoutubeBlock(secondary) {
             return
         } else {
             console.log('内容不为空')
-            // var pElement = document.querySelector("#list_wrap p");
-            // if (pElement) {
-            //     pElement.textContent = textContents[0];
-            // }
-            //document.getElementById("list_wrap").textContent = textContents[0];
+            var pElement = document.querySelector("#list_wrap p");
+            if (pElement) {
+                pElement.textContent = textContents[0];
+            }
+            document.getElementById("list_wrap").textContent = textContents[0];
+
             block_wrap.classList.add('active')
             list_wrap.classList.add('node_wrap_show')
             list_wrap.classList.remove('node_wrap_hide')
@@ -156,10 +153,7 @@ async function initYoutubeBlock(secondary) {
 
 
     };
-
-=======
     //给标题元素添加点击事件，通过点击控制class的添加&去除达成动画效果
->>>>>>> 66613ae52f71e5e849c9db4c50af140d23f636da:scripts/content.js
 }
 function aggregateCaptions(captions) {
     let str = ""
