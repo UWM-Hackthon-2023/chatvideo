@@ -132,6 +132,12 @@ async function initYoutubeBlock(secondary) {
     secondary.insertBefore(youtubeBlock, secondary.firstChild)
 
 
+    const videoId = getPara(window.location.href).v
+    let langOptionsWithLink = await getLangOptionsWithLink(videoId)
+    console.log(langOptionsWithLink)
+    let captions = await getCaptionsCollection(langOptionsWithLink)
+
+
 
 
     let summaryBut = document.getElementById("vyb-block-header-button-summary")
