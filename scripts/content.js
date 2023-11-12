@@ -1,5 +1,15 @@
 
-initYoutube()
+
+start()
+async function start() {
+    if(window.location.hostname === "www.youtube.com") {
+        console.log("get into youtube...")
+        await initYoutube()
+    } else {
+
+    }
+
+}
 
 async function initYoutube() {
 
@@ -9,7 +19,23 @@ async function initYoutube() {
         initYoutubeBlock(document.getElementById("secondary-inner"))
     })
 
+<<<<<<< HEAD:scripts/content2.js
 
+=======
+    const videoId = getPara(window.location.href).v
+    let langOptionsWithLink = await getLangOptionsWithLink(videoId)
+    if (langOptionsWithLink === undefined) {
+        return;
+    }
+
+    let captions = await getCaptionsCollection(langOptionsWithLink)
+
+    let summaryBut = document.getElementById("vyb-block-header-button-summary")
+    summaryBut.addEventListener("click", e => {
+        aggregateCaptions(captions)
+        window.open("https://chat.openai.com/", "_blank")
+    })
+>>>>>>> 66613ae52f71e5e849c9db4c50af140d23f636da:scripts/content.js
 
 }
 
@@ -37,7 +63,7 @@ async function getLangOptionsWithLink(videoId) {
         }
     })
 }
-async function getCaptionsCollection(videoId) {
+async function getCaptionsCollection(langOptionsWithLink) {
     let captionsResponse = await fetch(langOptionsWithLink[0].link)
     if (!captionsResponse.ok) {
         throw new Error(`HTTP error! status: ${captionsResponse.status}`)
@@ -89,8 +115,11 @@ async function initYoutubeBlock(secondary) {
 
 
     secondary.insertBefore(youtubeBlock, secondary.firstChild)
+
+
     // 获取标题元素
     var block_wrap = document.getElementById('block_wrap')
+<<<<<<< HEAD:scripts/content2.js
     console.log(block_wrap)
 
     const videoId = getPara(window.location.href).v
@@ -127,6 +156,25 @@ async function initYoutubeBlock(secondary) {
 
 
     };
+
+=======
+    //给标题元素添加点击事件，通过点击控制class的添加&去除达成动画效果
+>>>>>>> 66613ae52f71e5e849c9db4c50af140d23f636da:scripts/content.js
+}
+function aggregateCaptions(captions) {
+    let str = ""
+    captions.forEach((a) => str += a.innerHTML + "")
+    if(navigator.clipboard) {
+
+       console.log(navigator.clipboard)
+    }
+    window.navigator.clipboard.writeText("asdasd")
+        .then(() => {
+            console.log("Text copied to clipboard successfully!");
+        })
+        .catch(err => {
+            console.error("Failed to copy text: ", err);
+        });
 
 }
 
