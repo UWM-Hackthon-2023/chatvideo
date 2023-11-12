@@ -258,7 +258,10 @@ function trucateCaptions(transcript) {
 
 function aggregateCaptions(captions) {
     let str = ""
-    captions.forEach((a) => str += a.innerHTML + "")
+    captions.forEach((a) => str += a.textContent + "")
+    str = str.replaceAll("&#39;", "'")
+    str = str.replaceAll("[Music]", " ")
+    str = str.replaceAll("[Applause]", " ")
     return str;
 }
 
