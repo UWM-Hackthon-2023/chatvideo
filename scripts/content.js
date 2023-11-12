@@ -136,13 +136,7 @@ async function initYoutubeBlock(secondary) {
     secondary.insertBefore(youtubeBlock, secondary.firstChild)
 
 
-    const videoId = getPara(window.location.href).v
-    let langOptionsWithLink = await getLangOptionsWithLink(videoId)
-    if (langOptionsWithLink === undefined) {
-        return;
-    }
 
-    let captions = await getCaptionsCollection(langOptionsWithLink)
 
     let summaryBut = document.getElementById("vyb-block-header-button-summary")
     summaryBut.addEventListener("click", e => {
@@ -204,14 +198,13 @@ async function initYoutubeBlock(secondary) {
                 // console.log(temp);
                 pTime.className = "ytb-ptime"
                 pTime.innerHTML = secondsToMinutes(temp)
-                pTime.href = "https://youtu.be/" +  + "?t=" + temp
+                pTime.href = "/watch?v=" + videoId + "&t=" + temp + "s"
+
                 // 为每个文本创建新的 <p> 元素
                 let pElement = document.createElement("p");
                 pElement.className = "ytb-pelement"
                 if(temp <= 50*n){
                     if(content == "") {
-                        console.log(pTime)
-                        console.log("asdadsa")
                         container.appendChild(pTime)
                     }
                     content += text.textContent + " "
