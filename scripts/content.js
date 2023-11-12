@@ -1,3 +1,4 @@
+// import "./content.css"
 
 initYoutube()
 async function getLangOptionsWithLink(videoId) {
@@ -44,26 +45,125 @@ async function initYoutube() {
 }
 
 function initYoutubeBlock(secondary) {
-    
+
     var youtubeBlock  = document.createElement("div")
     youtubeBlock.id = "video-youtube-block-container"
     youtubeBlock.style = "width: auto; border: 1px solid #e0e0e0; padding: 10px; margin-bottom: 10px; border-radius: 5px;"
-    youtubeBlock.innerHTML = `
-        <div id="vyb-block-container-lfx" 
-            style="display: flex; justify-content: space-between; flex-direction: column">
-            <div id="vyb-block-header" style="display:flex; justify-content: space-between; flex-direction: row; border-radius: 5px;margin-bottom:5px">
-                <button id="vyb-block-header-button-summary" >
-                Summary
-                </button>
-            </div>
 
-            <div id="vyb-block-content" style="display:flex;flex-direction: column; border: 1px solid #e0e0e0; height:200px; font-size:14px">
-                "some transcript will be here"
-            </div>
+
+    youtubeBlock.innerHTML = `
+    <style type="text/css">
+        .block_wrap {
+            width: 500px;
+            margin: 0 auto;
+            border: 1px solid #e3e3e3;
+            border-radius: 10px;
+        }
+        .chapter_wrap {
+            background: white;
+            text-align: left;
+            border-radius: 8px;
+            color: #333333;
+            margin-bottom: 15px;
+            font-size: 14px;
+            overflow: hidden;
+        }
+        .title_item_wrap {
+            padding: 10px 10px 10px 0;
+            margin: 0 10px 0 10px;
+            border-bottom: none;
+            display: flex;
+            align-items: center;
+        }
+        /*使用伪类进行图标绘画*/
+        .title_item_wrap::after {
+            content: '';
+            width: 10px;
+            height: 10px;
+            border-top: 2px solid #999999;
+            border-right: 2px solid #999999;
+            transform: rotate(-45deg);
+            display: inline-block;
+            transition: 0.3s;
+            float: right;
+            margin-top: 10px;
+        }
+        /*使用类acitve类控制图标的旋转和展开时标题的下边界*/
+        .active {
+            border-bottom: 1px solid #000;
+        }
+        .active::after{
+            transform: rotate(135deg);
+            margin-top: 5px;
+        }
+        .chapter_title {
+            font-size: 16px;
+            padding: 0;
+            margin: 0;
+            width: calc(100% - 30px);
+        }
+        .node_wrap {
+            overflow: hidden;
+            overflow-y: scroll;
+            transition: 0.3s;
+        }
+        .node_wrap p {
+            padding: 0 20px 5px 20px;
+            margin: 10px 0;
+            border-bottom: 1px solid #e3e3e3
+        }
+        
+        /*控制内容块隐藏 隐藏时，整块向左边平移200%的宽度，并且将最大高度设置为0，否则页面会留有空白*/
+        .node_wrap_hide {
+            max-height: 0;
+        }
+        /*控制内容块显示，显示时，整块向右边复原，并且将最大高度设置为300px，里面的内容即会将块撑开*/
+        .node_wrap_show {
+            max-height: 150px;
+        }
+    </style>
+		    <div class="block_wrap">
+        <div id="block_wrap" class="title_item_wrap active">
+            <p class="chapter_title">章节名称</p>
+          <button id="vyb-block-header-button-summary" >
+                Summary
+               </button>
+          
         </div>
-    
+      
+        <div id="list_wrap" class="node_wrap node_wrap_show">
+				<p>123</p>
+        </div>
+    </div>
     `
-    secondary.insertBefore(youtubeBlock, secondary.firstChild)
+	secondary.insertBefore(youtubeBlock, secondary.firstChild)
+    // 获取标题元素
+    var block_wrap = document.getElementById('block_wrap')
+    console.log(block_wrap)
+    //给标题元素添加点击事件，通过点击控制class的添加&去除达成动画效果
+    block_wrap.onclick = function() {
+        // 获取标题元素className集合
+        let classArray = this.className.split(/\s+/)
+
+        // 获取内容块元素
+        let list_wrap = document.getElementById('list_wrap')
+
+        // 判断标题元素是否有类active，如若存在，则说明列表展开，这时点击则是隐藏内容块，否则显示内容块
+        if (classArray.includes('active')) {
+            // 隐藏内容块
+            block_wrap.classList.remove('active')
+            list_wrap.classList.remove('node_wrap_show')
+            list_wrap.classList.add('node_wrap_hide')
+            console.log(this.className.split(/\s+/))
+            return
+        } else {
+            // 显示内容块
+            block_wrap.classList.add('active')
+            list_wrap.classList.add('node_wrap_show')
+            list_wrap.classList.remove('node_wrap_hide')
+            return
+        }
+    }
 }
 
 function waitForElement(selector) {
