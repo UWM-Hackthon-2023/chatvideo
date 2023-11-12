@@ -4,11 +4,10 @@ async function getLangOptionsWithLink(videoId) {
     const videoPageResponse = await fetch("https://www.youtube.com/watch?v=" + videoId);
     const videoPageHtml = await videoPageResponse.text();
     const splittedHtml = videoPageHtml.split('"captions":')
-    
+
     if (splittedHtml.length < 2) { return; } // No Caption Available
 
     const captions_json = JSON.parse(splittedHtml[1].split(',"videoDetails')[0].replace('\n', ''));
-    // console.log(captions_json)
     const captionTracks = captions_json.playerCaptionsTracklistRenderer.captionTracks;
     const languageOptions = Array.from(captionTracks).map(i => { return i.name.simpleText; })
     
@@ -24,7 +23,17 @@ async function getLangOptionsWithLink(videoId) {
         }
     })
 }
-
+async function getCaptionsCollection(videoId) {
+    captionsResponse = await fetch(langOptionsWithLink[0].link)
+    if(!captionsResponse.ok) {
+        throw new Error(`HTTP error! status: ${captionsResponse.status}`)
+    }
+    parser = new DOMParser()
+    captionsXML = await captionsResponse.text()
+    captionsXML = parser.parseFromString(captionsXML, "text/xml")
+    captionsCollections = captionsXML.getElementsByTagName("text")
+    return Array.from(captionsCollections)
+}
 function getPara(str) {
     let urlObj = new URL(str);
     let paramObj = {};
@@ -34,13 +43,22 @@ function getPara(str) {
     return paramObj
 }
 async function initYoutube() {
-    const videoId = getPara(window.location.href).v
-    console.log(await getLangOptionsWithLink(videoId))
+
     
     waitForElement("ytd-watch-flexy").then((res) => {
 
         initYoutubeBlock(document.getElementById("secondary-inner"))  
     })
+
+    const videoId = getPara(window.location.href).v
+    langOptionsWithLink = await getLangOptionsWithLink(videoId)
+    if(!langOptionsWithLink) {
+        return;
+    }
+
+    captions = await getCaptionsCollection(videoId)
+    console.log(captions)
+    
 }
 
 function initYoutubeBlock(secondary) {
