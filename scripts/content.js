@@ -1,6 +1,26 @@
-// import "./content.css"
-chrome.script
+
 initYoutube()
+
+async function initYoutube() {
+
+
+    waitForElement("ytd-watch-flexy").then((res) => {
+
+        initYoutubeBlock(document.getElementById("secondary-inner"))
+    })
+
+    const videoId = getPara(window.location.href).v
+    let langOptionsWithLink = await getLangOptionsWithLink(videoId)
+    if (!langOptionsWithLink) {
+        return;
+    }
+
+    captions = await getCaptionsCollection(videoId)
+    console.log(captions)
+
+}
+
+
 async function getLangOptionsWithLink(videoId) {
     const videoPageResponse = await fetch("https://www.youtube.com/watch?v=" + videoId);
     const videoPageHtml = await videoPageResponse.text();
@@ -25,14 +45,14 @@ async function getLangOptionsWithLink(videoId) {
     })
 }
 async function getCaptionsCollection(videoId) {
-    captionsResponse = await fetch(langOptionsWithLink[0].link)
+    let captionsResponse = await fetch(langOptionsWithLink[0].link)
     if (!captionsResponse.ok) {
         throw new Error(`HTTP error! status: ${captionsResponse.status}`)
     }
-    parser = new DOMParser()
-    captionsXML = await captionsResponse.text()
+    let parser = new DOMParser()
+    let captionsXML = await captionsResponse.text()
     captionsXML = parser.parseFromString(captionsXML, "text/xml")
-    captionsCollections = captionsXML.getElementsByTagName("text")
+    let captionsCollections = captionsXML.getElementsByTagName("text")
     return Array.from(captionsCollections)
 }
 function getPara(str) {
@@ -42,24 +62,6 @@ function getPara(str) {
         paramObj[key] = val + ""
     })
     return paramObj
-}
-async function initYoutube() {
-
-
-    waitForElement("ytd-watch-flexy").then((res) => {
-
-        initYoutubeBlock(document.getElementById("secondary-inner"))
-    })
-
-    const videoId = getPara(window.location.href).v
-    langOptionsWithLink = await getLangOptionsWithLink(videoId)
-    if (!langOptionsWithLink) {
-        return;
-    }
-
-    captions = await getCaptionsCollection(videoId)
-    console.log(captions)
-
 }
 
 function initYoutubeBlock(secondary) {
@@ -77,11 +79,9 @@ function initYoutubeBlock(secondary) {
                 </button>
                 <button id="block_wrap" class="title_item_wrap active" style="background: transparent;border: 0px;"/>
             </div>
-    </div>
-    
-    <div id="list_wrap" class="node_wrap node_wrap_show">
-            <p>123</p>
-    </div>
+            <div id="list_wrap">
+                <p>123</p>
+            </div>
     </div>
     `
     secondary.insertBefore(youtubeBlock, secondary.firstChild)
@@ -89,29 +89,6 @@ function initYoutubeBlock(secondary) {
     var block_wrap = document.getElementById('block_wrap')
     console.log(block_wrap)
     //给标题元素添加点击事件，通过点击控制class的添加&去除达成动画效果
-    block_wrap.onclick = function () {
-        // 获取标题元素className集合
-        let classArray = this.className.split(/\s+/)
-
-        // 获取内容块元素
-        let list_wrap = document.getElementById('list_wrap')
-
-        // 判断标题元素是否有类active，如若存在，则说明列表展开，这时点击则是隐藏内容块，否则显示内容块
-        if (classArray.includes('active')) {
-            // 隐藏内容块
-            block_wrap.classList.remove('active')
-            list_wrap.classList.remove('node_wrap_show')
-            list_wrap.classList.add('node_wrap_hide')
-            console.log(this.className.split(/\s+/))
-            return
-        } else {
-            // 显示内容块
-            block_wrap.classList.add('active')
-            list_wrap.classList.add('node_wrap_show')
-            list_wrap.classList.remove('node_wrap_hide')
-            return
-        }
-    }
 }
 
 function waitForElement(selector) {
