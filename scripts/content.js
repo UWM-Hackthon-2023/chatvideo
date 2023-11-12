@@ -158,6 +158,7 @@ async function initYoutubeBlock(secondary) {
 function aggregateCaptions(captions) {
     let str = ""
     captions.forEach((a) => str += a.innerHTML + "")
+    // TODO clipboard need to fix it
     if(navigator.clipboard) {
 
        console.log(navigator.clipboard)
